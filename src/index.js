@@ -8,6 +8,8 @@ import { CreateNew } from "./screens/create_new/create_new";
 import { ViewPage } from "./screens/view_page/view_page";
 import { AuthLoadingPage, AuthPage } from "./screens/auth_page/auth_page";
 import { FullPageLoader } from "./widgets/loaders";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 ReactDOM.render(
   <React.StrictMode>
