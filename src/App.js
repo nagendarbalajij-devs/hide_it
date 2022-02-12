@@ -1,7 +1,8 @@
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { Navbar } from "./widgets/navbar/Navbar";
 import store from "./redux/store";
+import { Popup } from "./widgets/popup/popup";
 
 const App = (props) => {
 	return (
@@ -12,6 +13,7 @@ const App = (props) => {
 					<Outlet />
 				</div>
 			</div>
+			<Popup />
 		</Provider>
 	);
 };

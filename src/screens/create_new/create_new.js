@@ -11,10 +11,19 @@ const CreateNew = (props) => {
 	const [address, setAddress] = useState("");
 	useEffect(() => {
 		try {
+			window.ethereum.on("accountsChanged", () => {
+				checkWallet();
+			});
+		} catch (e) {
+			console.log(e);
+		}
+		checkWallet();
+	}, []);
+
+	const checkWallet = () => {
+		try {
 			let provider = new ethers.providers.Web3Provider(window.ethereum);
 			provider.listAccounts().then((val) => {
-				console.log(val);
-				console.log(val.length === 0);
 				setConnected(val.length !== 0);
 				setAddress(val);
 			});
@@ -23,7 +32,7 @@ const CreateNew = (props) => {
 		} catch (e) {
 			setProviderAvailable(false);
 		}
-	}, []);
+	};
 
 	return (
 		<div className="flex flex-col px-12 py-6">
@@ -37,7 +46,7 @@ const CreateNew = (props) => {
 				</select>
 				<div
 					className="select-none rounded-full border-2 border-red-600 px-4 py-2 text-sm font-semibold hover:bg-red-600 hover:text-white hover:shadow-lg"
-					onClick={requestConnectToWallet}
+					onClick={() => requestConnectToWallet(checkWallet)}
 				>
 					{providerAvailable
 						? !connected
