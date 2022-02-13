@@ -56,11 +56,11 @@ const CreateNew = (props) => {
 
 	return (
 		<div className="flex h-full flex-col px-6 py-6">
-			<div className="flex h-full flex-col items-center justify-start sm:justify-center">
-				<div className="mb-12 flex w-full justify-center text-4xl font-bold text-red-600 sm:w-1/2">
+			<div className="flex h-full flex-col items-center justify-start overflow-clip overflow-y-scroll sm:justify-center">
+				<div className="mb-12 flex w-full justify-center text-4xl font-bold text-red-600 xl:w-1/2">
 					Create a new message...
 				</div>
-				<div className="flex w-full flex-col items-center justify-between sm:w-1/2 sm:flex-row">
+				<div className="flex w-full flex-col items-center justify-between  lg:flex-row xl:w-1/2">
 					<div className="flex select-none flex-row font-semibold subpixel-antialiased">
 						<div className="mr-2">
 							{connected ? `You are connected to >` : `You are not connected`}{" "}
@@ -68,7 +68,9 @@ const CreateNew = (props) => {
 						<div className="text-red-600">{connected ? network : ""}</div>
 					</div>
 					<div
-						className="mt-4 select-none rounded-full border-2 border-red-600 px-4 py-2 text-sm font-semibold hover:bg-red-600 hover:text-white hover:shadow-lg sm:mt-0"
+						className={`${
+							!connected ? "flex" : "hidden"
+						} mt-4 select-none rounded-full border-2 border-red-600 px-4 py-2 text-sm font-semibold hover:bg-red-600 hover:text-white hover:shadow-lg sm:mt-0`}
 						onClick={() => requestConnectToWallet(checkWallet)}
 					>
 						{providerAvailable
@@ -77,8 +79,15 @@ const CreateNew = (props) => {
 								: `${address}`
 							: `No providers available!!`}
 					</div>
+					<div
+						className={`${
+							connected ? "flex" : "hidden"
+						}  my-4 text-xs font-semibold text-red-600`}
+					>
+						{address}
+					</div>
 				</div>
-				<div className="mt-6 flex w-full justify-center sm:w-1/2">
+				<div className="mt-6 flex w-full justify-center xl:w-1/2">
 					<AccentInputArea
 						className="w-full"
 						placeholder="Something about the content you wish to hide..."
@@ -86,7 +95,7 @@ const CreateNew = (props) => {
 						rows={2}
 					/>
 				</div>
-				<div className="mt-6 flex w-full justify-center sm:w-1/2">
+				<div className="mt-6 flex w-full justify-center xl:w-1/2">
 					<AccentInputArea
 						className="w-full"
 						placeholder="Content you wish to hide"
@@ -94,7 +103,7 @@ const CreateNew = (props) => {
 						rows={4}
 					/>
 				</div>
-				<div className="mt-6 flex w-full justify-center sm:w-1/2">
+				<div className="mt-6 flex w-full justify-center xl:w-1/2">
 					<AccentInputArea
 						className="w-full"
 						placeholder="A message to the future you..."
@@ -102,7 +111,7 @@ const CreateNew = (props) => {
 						rows={2}
 					/>
 				</div>
-				<div className="mt-6 flex w-full flex-row items-center justify-between sm:w-1/2">
+				<div className="mt-6 flex w-full flex-row items-center justify-between xl:w-1/2">
 					<div className="text-lg font-semibold">
 						{privateMessage
 							? `This is a private message`
