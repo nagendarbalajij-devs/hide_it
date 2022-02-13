@@ -7,9 +7,9 @@ import { Popup } from "./widgets/popup/popup";
 const App = (props) => {
 	return (
 		<Provider store={store}>
-			<div className="h-screen w-screen bg-stone-50">
+			<div className="relative h-screen w-screen bg-stone-50">
 				<Navbar></Navbar>
-				<div className="mt-10">
+				<div className="absolute top-20 left-0 right-0 bottom-0">
 					<Outlet />
 				</div>
 			</div>
