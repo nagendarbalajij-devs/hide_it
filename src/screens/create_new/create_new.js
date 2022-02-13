@@ -127,7 +127,7 @@ const CreateNew = (props) => {
 					</ThemeProvider>
 				</div>
 
-				<div className="mt-6 mb-12">
+				<div className="mt-6">
 					<AccentButton
 						onClick={async () => {
 							console.log(provider.getSigner(0));
