@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { showPopup } from "../../redux/popups/popup_slice";
+import { setStateWallet } from "../../redux/user_details/user_details_slice";
 import { createRecord } from "../../services/contract_services";
 import { theme } from "../../utils/mui_config";
 import { popups } from "../../utils/popup_utils";
@@ -46,6 +47,7 @@ const CreateNew = (props) => {
 			provider.listAccounts().then((val) => {
 				setConnected(val.length !== 0);
 				setAddress(val);
+				dispath(setStateWallet(val));
 			});
 			setProviderAvailable(true);
 			setProvider(provider);
