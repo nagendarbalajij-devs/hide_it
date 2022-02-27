@@ -8,11 +8,13 @@ import {
 	setProvider,
 	setProviderAvailable,
 } from "../../redux/wallet_state/wallet_state";
+import { ContractServices } from "../../services/contract_services";
 import { checkWallet, getButtonState } from "../../services/network_services";
 
 export const WalletStatePage = (props) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	ContractServices.init();
 	useEffect(() => {
 		try {
 			window.ethereum.on("accountsChanged", () => {
@@ -29,6 +31,7 @@ export const WalletStatePage = (props) => {
 			},
 			setNetwork: (val) => {
 				dispatch(setNetwork(val));
+				ContractServices.instance.loadContract(val);
 				if (getButtonState(val).popup) {
 					dispatch(getButtonState(val).popup);
 				}

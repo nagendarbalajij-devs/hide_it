@@ -1,20 +1,32 @@
 import { ThemeProvider } from "@emotion/react";
 import { Switch } from "@mui/material";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { getMessageContent } from "../../services/contract_services";
-import { convertEthToUsd } from "../../services/conversion_service";
+import { useDispatch, useSelector } from "react-redux";
+import { saveMessageHelper } from "../../helper/contract_helper";
+import { SaveMessageModel } from "../../model/models";
+import { showPopup } from "../../redux/popups/popup_slice";
+import {
+	convertEthToUsd,
+	getUsdValue,
+} from "../../services/conversion_service";
 import { theme } from "../../utils/mui_config";
+import { popups } from "../../utils/popup_utils";
 import { requestConnectToWallet } from "../../utils/web3_utils";
 import { AccentButton } from "../../widgets/button/accent_button";
 import { AccentInput, AccentInputArea } from "../../widgets/inputs";
 
 const CreateNew = (props) => {
-	const [privateMessage, setPrivate] = useState(true);
-	const [fine, setFine] = useState(0);
 	const [usdValue, setUsdValue] = useState(0);
-	var walletState = useSelector((state) => state.walletState);
+	const dispatch = useDispatch();
 
+	const [message, setMessage] = useState();
+	const [content, setContent] = useState();
+	const [fMessage, setFMessage] = useState();
+	const [fine, setFine] = useState(0);
+	const [privateMessage, setPrivate] = useState(true);
+
+	var walletState = useSelector((state) => state.walletState);
+	getUsdValue().then(setUsdValue);
 	return (
 		<div className="flex h-full flex-col px-6 py-6">
 			<div className="flex h-full flex-col items-center justify-start overflow-clip overflow-y-scroll sm:justify-center">
@@ -55,6 +67,7 @@ const CreateNew = (props) => {
 						placeholder="Something about the content you wish to hide..."
 						label="Enter a message"
 						rows={2}
+						onChange={setMessage}
 					/>
 				</div>
 				<div className="mt-6 flex w-full justify-center xl:w-1/2">
@@ -63,6 +76,7 @@ const CreateNew = (props) => {
 						placeholder="Content you wish to hide"
 						label="Enter a message you wish to hide"
 						rows={4}
+						onChange={setContent}
 					/>
 				</div>
 				<div className="mt-6 flex w-full justify-center xl:w-1/2">
@@ -71,6 +85,7 @@ const CreateNew = (props) => {
 						placeholder="A message to the future you..."
 						label="Enter a message for yourself to the future"
 						rows={2}
+						onChange={setFMessage}
 					/>
 				</div>
 				<div className="mt-6 flex w-full flex-row items-center justify-between xl:w-1/2">
@@ -106,11 +121,22 @@ const CreateNew = (props) => {
 				<div className="mt-6">
 					<AccentButton
 						onClick={async () => {
-							try {
-								const response = await getMessageContent();
-							} catch (e) {
-								console.log(e);
+							const newMessage = new SaveMessageModel();
+							newMessage.content = content;
+							newMessage.message = message;
+							newMessage.fMessage = fMessage;
+							newMessage.fine = fine;
+							newMessage.isPrivate = privateMessage;
+							if (validate(newMessage)) {
+								saveMessageHelper(newMessage);
+							} else {
+								dispatch(showPopup(popups.check));
 							}
+							// try {
+							// 	const response = await getMessageContent();
+							// } catch (e) {
+							// 	console.log(e);
+							// }
 						}}
 						enabled={walletState.buttonState}
 					>
@@ -120,6 +146,10 @@ const CreateNew = (props) => {
 			</div>
 		</div>
 	);
+};
+
+const validate = (message) => {
+	return !isNaN(message.fine);
 };
 
 export { CreateNew };

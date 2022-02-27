@@ -14,4 +14,9 @@ export const popups = {
 		title: "Error",
 		message: "The network you are connected to is not supported!",
 	},
+
+	check: {
+		title: "Error",
+		message: "Please check your input",
+	},
 };
