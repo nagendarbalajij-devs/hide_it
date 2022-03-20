@@ -1,5 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 const { task } = require("hardhat/config");
+const fs = require("fs");
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
@@ -8,6 +9,21 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 	for (const account of accounts) {
 		console.log(account.address);
 	}
+});
+
+task("deploy", "Deploy to local Ganache", async (taskArgs, hre) => {
+	const FundMeContract = await hre.ethers.getContractFactory("HideIt");
+	const deployment = await FundMeContract.deploy()
+		.then((e) => {
+			console.log(`Contract deployed at address ${e.address}`);
+			fs.copyFileSync(
+				"./artifacts/contracts/HideIt.sol/HideIt.json",
+				"./src/abi/abi.json"
+			);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
 });
 
 // You need to export an object to set up your config

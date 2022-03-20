@@ -15,6 +15,7 @@ export const WalletStatePage = (props) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	ContractServices.init();
+
 	useEffect(() => {
 		try {
 			window.ethereum.on("accountsChanged", () => {

@@ -3,9 +3,14 @@
 pragma solidity 0.8.7;
 
 contract HideIt {
-    mapping(address => uint32[]) private contentForAddress;
-    mapping(uint32 => Message) private contentForMessageId;
+    mapping(address => bytes32[]) private contentForAddress;
+    mapping(bytes32 => Message) private contentForMessageId;
     uint256 private totalCount = 0;
+    address contractOwner;
+
+    constructor() {
+        contractOwner = msg.sender;
+    }
 
     // Saving a message by generating a random message id
     function saveMessage(
@@ -14,9 +19,9 @@ contract HideIt {
         string memory _messageForFuture,
         uint256 _fine,
         bool _isPrivate
-    ) public returns (uint32) {
+    ) public {
         totalCount++;
-        uint32 _messageId = createMessageId(_content, totalCount, msg.sender);
+        bytes32 _messageId = createMessageId(_content, totalCount, msg.sender);
         Message memory m = Message({
             content: _content,
             message: _message,
@@ -28,11 +33,11 @@ contract HideIt {
         });
         contentForAddress[msg.sender].push(_messageId);
         contentForMessageId[_messageId] = m;
-        return _messageId;
+        emit ReturnSaveMessageId(_messageId);
     }
 
     // Get a saved message from message Id
-    function getMessageContentFromId(uint32 _messageId)
+    function getMessageContentFromId(bytes32 _messageId)
         public
         view
         returns (MessageContent memory)
@@ -48,7 +53,7 @@ contract HideIt {
             });
     }
 
-    function getMessage(uint32 _messageId)
+    function getMessage(bytes32 _messageId)
         public
         payable
         checkFine(_messageId)
@@ -60,11 +65,32 @@ contract HideIt {
     }
 
     // Get a saved message from senders addresss
-    function getMessageFromAddress() public view returns (uint32[] memory) {
+    function getMessageFromAddress() public view returns (bytes32[] memory) {
         return contentForAddress[msg.sender];
     }
 
-    modifier checkPrivate(uint32 messageId) {
+    function createMessageId(
+        string memory _text,
+        uint256 _num,
+        address _addr
+    ) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(_text, _num, _addr));
+    }
+
+    function withdraw() public payable checkOwner {
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function test() public payable returns (bytes32) {
+        uint256 i = 12;
+        return keccak256(abi.encodePacked("_text", i, msg.sender));
+    }
+
+    //EVENTS
+    event ReturnSaveMessageId(bytes32);
+
+    // MODIFIERS
+    modifier checkPrivate(bytes32 messageId) {
         Message memory m = contentForMessageId[messageId];
         if (m.isPrivate) {
             require(msg.sender == m.owner, "This is a private message!");
@@ -74,21 +100,20 @@ contract HideIt {
         }
     }
 
-    modifier checkFine(uint32 _messageId) {
+    modifier checkFine(bytes32 _messageId) {
         Message memory m = contentForMessageId[_messageId];
         require(msg.value >= m.fine);
         _;
     }
 
-    function createMessageId(
-        string memory _text,
-        uint256 _num,
-        address _addr
-    ) internal pure returns (uint32) {
-        uint256 b = uint256(keccak256(abi.encodePacked(_text, _num, _addr)));
-        return uint32(b);
+    modifier checkOwner() {
+        if (msg.sender == contractOwner) {
+            _;
+        }
     }
 }
+
+//Structs
 
 struct Message {
     string content;
@@ -96,7 +121,7 @@ struct Message {
     string messageForFuture;
     uint256 fine;
     bool isPrivate;
-    uint32 messageId;
+    bytes32 messageId;
     address owner;
 }
 
@@ -104,6 +129,6 @@ struct MessageContent {
     string message;
     uint256 fine;
     bool isPrivate;
-    uint32 messageId;
+    bytes32 messageId;
     address owner;
 }

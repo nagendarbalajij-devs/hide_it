@@ -2,6 +2,8 @@ import { BigNumber, Contract } from "ethers";
 import { abi, hideIdAbi } from "../utils/abi";
 import { gProvider } from "./network_services";
 import { ethers } from "ethers";
+import { shouldForwardProp } from "@mui/styled-engine";
+const abiJson = require("./../abi/abi.json");
 
 export class ContractServices {
 	static instance = ContractServices;
@@ -21,14 +23,14 @@ export class ContractServices {
 			case "rinkeby":
 				this.contract = new Contract(
 					"0x47599Cb3F93D7b89Fd316B8A4DD203260CDd439A",
-					hideIdAbi,
+					this.getAbi(),
 					this.getSigner()
 				);
 				break;
 			case "unknown":
 				this.contract = new Contract(
-					"0x12d0393b640c784cB1f1C459c97732Be324F6F64",
-					hideIdAbi,
+					"0x59157349C336A29583eF1f0f7AAE939Ca9478A58",
+					this.getAbi(),
 					this.getSigner()
 				);
 				break;
@@ -36,6 +38,10 @@ export class ContractServices {
 				this.contract = null;
 				break;
 		}
+	}
+
+	getAbi() {
+		return abiJson.abi;
 	}
 }
 
@@ -57,7 +63,9 @@ export const createRecord = async (signer) => {
 };
 
 export const send = async (exec) => {
-	return await exec;
+	const tx = await exec;
+	const res = tx.wait();
+	return res;
 };
 
 // export const saveMessage = async (signer, message) => {

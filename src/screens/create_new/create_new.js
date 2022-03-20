@@ -1,10 +1,12 @@
 import { ThemeProvider } from "@emotion/react";
 import { Switch } from "@mui/material";
+import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { saveMessageHelper } from "../../helper/contract_helper";
 import { SaveMessageModel } from "../../model/models";
 import { showPopup } from "../../redux/popups/popup_slice";
+import { setupListeners } from "../../services/contract_listeners";
 import {
 	convertEthToUsd,
 	getUsdValue,
@@ -19,9 +21,9 @@ const CreateNew = (props) => {
 	const [usdValue, setUsdValue] = useState(0);
 	const dispatch = useDispatch();
 
-	const [message, setMessage] = useState();
-	const [content, setContent] = useState();
-	const [fMessage, setFMessage] = useState();
+	const [message, setMessage] = useState("");
+	const [content, setContent] = useState("");
+	const [fMessage, setFMessage] = useState("");
 	const [fine, setFine] = useState(0);
 	const [privateMessage, setPrivate] = useState(true);
 
@@ -33,7 +35,7 @@ const CreateNew = (props) => {
 				{/* <div className="mt-4 mb-4 flex w-full justify-center text-2xl font-bold text-red-600 xl:w-1/2">
 					Create a new message...
 				</div> */}
-				<div className="flex w-full flex-col items-center justify-between  lg:flex-row xl:w-1/2">
+				<div className="flex w-full flex-col items-center justify-between  lg:flex-row xl:w-2/3">
 					<div className="flex select-none flex-row text-xl font-semibold text-red-600 subpixel-antialiased">
 						<div className="mr-2">Create a new message...</div>
 
@@ -61,7 +63,7 @@ const CreateNew = (props) => {
 						{walletState.address}
 					</div>
 				</div>
-				<div className="mt-6 flex w-full justify-center xl:w-1/2">
+				<div className="mt-6 flex w-full justify-center xl:w-2/3">
 					<AccentInputArea
 						className="w-full"
 						placeholder="Something about the content you wish to hide..."
@@ -70,7 +72,7 @@ const CreateNew = (props) => {
 						onChange={setMessage}
 					/>
 				</div>
-				<div className="mt-6 flex w-full justify-center xl:w-1/2">
+				<div className="mt-6 flex w-full justify-center xl:w-2/3">
 					<AccentInputArea
 						className="w-full"
 						placeholder="Content you wish to hide"
@@ -79,7 +81,7 @@ const CreateNew = (props) => {
 						onChange={setContent}
 					/>
 				</div>
-				<div className="mt-6 flex w-full justify-center xl:w-1/2">
+				<div className="mt-6 flex w-full justify-center xl:w-2/3">
 					<AccentInputArea
 						className="w-full"
 						placeholder="A message to the future you..."
@@ -88,7 +90,7 @@ const CreateNew = (props) => {
 						onChange={setFMessage}
 					/>
 				</div>
-				<div className="mt-6 flex w-full flex-row items-center justify-between xl:w-1/2">
+				<div className="mt-6 flex w-full flex-row items-center justify-between xl:w-2/3">
 					<div className="text-lg font-semibold">{`Fine Amount is:   ${convertEthToUsd(
 						fine,
 						usdValue
@@ -102,7 +104,7 @@ const CreateNew = (props) => {
 						onChange={(e) => setFine(e)}
 					/>
 				</div>
-				<div className="mt-6 flex w-full flex-row items-center justify-between xl:w-1/2">
+				<div className="mt-6 flex w-full flex-row items-center justify-between xl:w-2/3">
 					<div className="text-lg font-semibold">
 						{privateMessage
 							? `This is a private message`
@@ -121,22 +123,23 @@ const CreateNew = (props) => {
 				<div className="mt-6">
 					<AccentButton
 						onClick={async () => {
+							if (!walletState.connected) {
+								dispatch(showPopup(popups.noWalletConnected));
+								return;
+							}
 							const newMessage = new SaveMessageModel();
 							newMessage.content = content;
 							newMessage.message = message;
 							newMessage.fMessage = fMessage;
-							newMessage.fine = fine;
+							newMessage.fine = fine * 10 ** 18;
 							newMessage.isPrivate = privateMessage;
 							if (validate(newMessage)) {
-								saveMessageHelper(newMessage);
+								setupListeners(dispatch);
+								await saveMessageHelper(newMessage);
+								dispatch(showPopup(popups.messageSaved));
 							} else {
 								dispatch(showPopup(popups.check));
 							}
-							// try {
-							// 	const response = await getMessageContent();
-							// } catch (e) {
-							// 	console.log(e);
-							// }
 						}}
 						enabled={walletState.buttonState}
 					>
@@ -149,7 +152,12 @@ const CreateNew = (props) => {
 };
 
 const validate = (message) => {
-	return !isNaN(message.fine);
+	return (
+		!isNaN(message.fine) &&
+		message.content !== "" &&
+		message.message !== "" &&
+		message.fMessage !== ""
+	);
 };
 
 export { CreateNew };

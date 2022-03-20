@@ -26,12 +26,12 @@ const Navbar = (props) => {
 				<div className={`${navbarItem} font-semibold hover:text-red-600`}>
 					<Link to="/view">View</Link>
 				</div>
-				<div
+				{/* <div
 					className={`${navbarItem} font-semibold hover:text-red-600`}
 					onClick={() => dispath(setAppState(!loggedIn))}
 				>
 					{loggedIn ? "Log Out" : "Log in"}
-				</div>
+				</div> */}
 				<div className={navbarItem}>
 					<AccentButton>
 						<Link to="/new">Create New</Link>{" "}

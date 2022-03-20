@@ -14,7 +14,7 @@ const Popup = (props) => {
 				<div className="mx-6 mt-4 select-none text-lg font-semibold text-white subpixel-antialiased">
 					{popup.title}
 				</div>
-				<div className="mx-6 mt-3 select-none text-sm font-normal text-white subpixel-antialiased">
+				<div className="mx-6 mt-3 break-all text-sm font-normal text-white subpixel-antialiased">
 					{popup.message}
 				</div>
 				<div

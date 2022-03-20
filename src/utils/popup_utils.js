@@ -19,4 +19,15 @@ export const popups = {
 		title: "Error",
 		message: "Please check your input",
 	},
+
+	noWalletConnected: {
+		title: "Error",
+		message:
+			"You are not connected to any wallets! Connect a wallet to continue",
+	},
+
+	messageSaved: {
+		title: "Success",
+		message: "Your message has been saved to the blockchain",
+	},
 };
