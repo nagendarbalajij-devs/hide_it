@@ -3,6 +3,7 @@ import { Switch } from "@mui/material";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { getMyMessages } from "../../helper/contract_helper";
 import { AccentInput, AccentInputArea } from "../../widgets/inputs";
 import { ViewMessage } from "../../widgets/message/view_message";
 import { PageTitle } from "../../widgets/texts";
@@ -39,11 +40,11 @@ const ViewPage = (props) => {
 			owner: "0xsfsdf",
 		},
 	]);
-	const walletAddress = useSelector((state) => state.userDetails.wallet);
-	const [search, setSearch] = useState(walletAddress);
+	const walletState = useSelector((state) => state.walletState);
+	const [search, setSearch] = useState(walletState.address);
 
 	useEffect(() => {
-		setWalletAvailable(walletAddress !== "");
+		getMyMessages();
 	});
 
 	return (
@@ -51,9 +52,9 @@ const ViewPage = (props) => {
 			<div className="justify-star mx-4 flex h-full w-full flex-col items-start  md:w-2/3">
 				<div className="flex w-full flex-col items-center justify-between lg:flex-row">
 					<PageTitle>Messages </PageTitle>
-					<div className="mt-2 block w-full justify-center lg:mt-0 lg:w-1/5">
+					<div className="mt-2 block w-full justify-center lg:mt-0 lg:w-1/3">
 						<AccentInput
-							value={walletAddress}
+							value=""
 							className="w-full"
 							placeholder="Search with public address"
 							onChange={setSearch}

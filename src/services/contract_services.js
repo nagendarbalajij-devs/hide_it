@@ -68,18 +68,10 @@ export const send = async (exec) => {
 	return res;
 };
 
-// export const saveMessage = async (signer, message) => {
-// 	const contract = getContract(signer);
-// 	const value = 0.00012 * 10 ** 18;
-// 	const tx = await contract.test({
-// 		value: value.toString(),
-// 	});
-// 	const res = await tx.wait();
-// 	console.log(res);
-// 	console.log(res.events);
-// 	console.log(tx.result);
-// 	return tx;
-// };
+export const get = async (exec) => {
+	const tx = await exec;
+	return tx;
+};
 
 export function saveMessage(message, contract) {}
 
