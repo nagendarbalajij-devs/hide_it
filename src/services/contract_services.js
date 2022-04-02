@@ -29,7 +29,7 @@ export class ContractServices {
 				break;
 			case "unknown":
 				this.contract = new Contract(
-					"0x59157349C336A29583eF1f0f7AAE939Ca9478A58",
+					"0x260F05400036f06F3182730798350C2286f8cf25",
 					this.getAbi(),
 					this.getSigner()
 				);
@@ -45,22 +45,22 @@ export class ContractServices {
 	}
 }
 
-const getContract = (signer) => {
-	return new Contract(
-		"0x12d0393b640c784cB1f1C459c97732Be324F6F64",
-		hideIdAbi,
-		signer
-	);
-};
+// const getContract = (signer) => {
+// 	return new Contract(
+// 		"0x12d0393b640c784cB1f1C459c97732Be324F6F64",
+// 		hideIdAbi,
+// 		signer
+// 	);
+// };
 
-export const createRecord = async (signer) => {
-	const contract = getContract(signer);
-	// const tx = await contract.saveStruct("asdf", 123);
-	const tx = await contract.getStruct();
-	// const rec = await tx.wait();
-	console.log(tx.number);
-	return;
-};
+// export const createRecord = async (signer) => {
+// 	const contract = getContract(signer);
+// 	// const tx = await contract.saveStruct("asdf", 123);
+// 	const tx = await contract.getStruct();
+// 	// const rec = await tx.wait();
+// 	console.log(tx.number);
+// 	return;
+// };
 
 export const send = async (exec) => {
 	const tx = await exec;
@@ -75,10 +75,10 @@ export const get = async (exec) => {
 
 export function saveMessage(message, contract) {}
 
-export const getMessageContent = async (_messageId) => {
-	const contract = getContract(gProvider.getSigner(0));
-	const tx = await contract.getMessageContentFromId(12);
-	console.log(tx);
-	const res = await tx.wait();
-	console.log(res);
-};
+// export const getMessageContent = async (_messageId) => {
+// 	const contract = getContract(gProvider.getSigner(0));
+// 	const tx = await contract.getMessageContentFromId(12);
+// 	console.log(tx);
+// 	const res = await tx.wait();
+// 	console.log(res);
+// };

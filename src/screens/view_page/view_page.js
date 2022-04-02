@@ -3,6 +3,7 @@ import { Switch } from "@mui/material";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useOutletContext } from "react-router-dom";
 import { getMyMessages } from "../../helper/contract_helper";
 import { AccentInput, AccentInputArea } from "../../widgets/inputs";
 import { ViewMessage } from "../../widgets/message/view_message";
@@ -10,41 +11,14 @@ import { PageTitle } from "../../widgets/texts";
 
 const ViewPage = (props) => {
 	const [walletAvailable, setWalletAvailable] = useState(false);
-	const [contents, setContents] = useState([
-		{
-			message: "This is a sample message",
-			fine: 123,
-			isPrivate: false,
-			messageId: "234io2j3rlh23iru23",
-			owner: "0xsfsdf",
-		},
-		{
-			message: "This is a sample message",
-			fine: 0,
-			isPrivate: false,
-			messageId: "234io2j3rlh23iru23",
-			owner: "0xsfsdf",
-		},
-		{
-			message: "This is a sample message",
-			fine: 123,
-			isPrivate: false,
-			messageId: "234io2j3rlh23iru23",
-			owner: "0xsfsdf",
-		},
-		{
-			message: "This is a sample message",
-			fine: 123,
-			isPrivate: false,
-			messageId: "234io2j3rlh23iru23",
-			owner: "0xsfsdf",
-		},
-	]);
-	const walletState = useSelector((state) => state.walletState);
-	const [search, setSearch] = useState(walletState.address);
+	const [contents, setContents] = useState([]);
+	const [search, setSearch] = useState();
+	const setWalletLoadCallback = useOutletContext();
 
 	useEffect(() => {
-		getMyMessages();
+		setWalletLoadCallback(() => {
+			getMyMessages();
+		});
 	});
 
 	return (
@@ -57,7 +31,7 @@ const ViewPage = (props) => {
 							value=""
 							className="w-full"
 							placeholder="Search with public address"
-							onChange={setSearch}
+							onChange={() => {}}
 						/>
 					</div>
 				</div>

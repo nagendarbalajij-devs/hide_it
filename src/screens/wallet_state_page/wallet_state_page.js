@@ -33,6 +33,7 @@ export const WalletStatePage = (props) => {
 			setNetwork: (val) => {
 				dispatch(setNetwork(val));
 				ContractServices.instance.loadContract(val);
+				props.onWalletLoadCallback();
 				if (getButtonState(val).popup) {
 					dispatch(getButtonState(val).popup);
 				}

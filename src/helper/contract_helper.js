@@ -19,14 +19,14 @@ export const saveMessageHelper = async (message) => {
 };
 
 export const getMyMessages = async (address) => {
+	console.log(ContractServices.instance.getSigner());
 	const res = await get(
 		ContractServices.instance.contract.getMessageFromAddress()
 	);
+	console.log(res.length);
 	if (res.length > 0) {
 		const res2 = await get(
-			ContractServices.instance.contract.getMessageContentFromId(
-				"0xc3a94600643518006ffba08b78ef1fc8575a6660d795795ac67daa8803145d6d"
-			)
+			ContractServices.instance.contract.getMessageContentFromId(res[1])
 		);
 		console.log(res2);
 	}

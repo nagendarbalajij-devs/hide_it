@@ -38,7 +38,7 @@ module.exports = {
 			chainId: 1337,
 			url: "HTTP://127.0.0.1:7545",
 			accounts: [
-				"0xccc8a734866ebb8da8a13d2d0331b5c7dc70ea49e22a3931fbaee896fce9e6c9",
+				"7a55d648c67107346efccca63674fb087de839fd9f3dc4ed8c3025873dca8942",
 			],
 		},
 		rinkeby: {
