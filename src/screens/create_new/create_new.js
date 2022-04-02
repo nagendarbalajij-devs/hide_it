@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { saveMessageHelper } from "../../helper/contract_helper";
 import { SaveMessageModel } from "../../model/models";
-import { showPopup } from "../../redux/popups/popup_slice";
+import { dismissPopup, showPopup } from "../../redux/popups/popup_slice";
 import { setupListeners } from "../../services/contract_listeners";
 import {
 	convertEthToUsd,
@@ -135,8 +135,12 @@ const CreateNew = (props) => {
 							newMessage.isPrivate = privateMessage;
 							if (validate(newMessage)) {
 								setupListeners(dispatch);
-								await saveMessageHelper(newMessage);
-								dispatch(showPopup(popups.messageSaved));
+								dispatch(showPopup(popups.transactionInProgress));
+								try {
+									await saveMessageHelper(newMessage);
+								} catch (e) {
+									dispatch(dismissPopup());
+								}
 							} else {
 								dispatch(showPopup(popups.check));
 							}

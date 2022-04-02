@@ -38,7 +38,6 @@ describe("Test Function", () => {
 		const s = await send(
 			hideIt.saveMessage("Content", "Message For Future", "Future", 0, false)
 		);
-		console.log(s);
 		expect(s).to.not.equal(undefined);
 	});
 });

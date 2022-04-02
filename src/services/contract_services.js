@@ -29,7 +29,7 @@ export class ContractServices {
 				break;
 			case "unknown":
 				this.contract = new Contract(
-					"0x260F05400036f06F3182730798350C2286f8cf25",
+					"0xA4098F72581EB3A16374DB3A0AEfb7Fc04b6DaB5",
 					this.getAbi(),
 					this.getSigner()
 				);

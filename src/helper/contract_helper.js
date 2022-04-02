@@ -1,11 +1,7 @@
-import { Web3Provider } from "@ethersproject/providers";
-import { BigNumber, ethers } from "ethers";
-import { resolvePath } from "react-router-dom";
-import Web3 from "web3";
 import { ContractServices, get, send } from "../services/contract_services";
 
 export const saveMessageHelper = async (message) => {
-	const res = await send(
+	await send(
 		ContractServices.instance.contract.saveMessage(
 			message.content,
 			message.message,
@@ -14,12 +10,10 @@ export const saveMessageHelper = async (message) => {
 			message.isPrivate
 		)
 	);
-	console.log(res);
 	return;
 };
 
 export const getMyMessages = async (address) => {
-	console.log(ContractServices.instance.getSigner());
 	var list = [];
 	const res = await get(
 		ContractServices.instance.contract.getMessageFromAddress()
@@ -35,7 +29,6 @@ export const getMyMessages = async (address) => {
 };
 
 export const getFullMessage = async ({ messageId, fine }) => {
-	console.log(messageId);
 	const res = await send(
 		ContractServices.instance.contract.getMessage(messageId.toString(), {
 			value: fine.toString(),

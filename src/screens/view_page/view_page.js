@@ -1,31 +1,38 @@
-import { ThemeProvider } from "@emotion/react";
-import { Switch } from "@mui/material";
-import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useOutletContext } from "react-router-dom";
 import { getFullMessage, getMyMessages } from "../../helper/contract_helper";
 import { showContentPopup } from "../../redux/content_popup/content_popup_slice";
 import { dismissPopup, showPopup } from "../../redux/popups/popup_slice";
+import { setupMessageListener } from "../../services/contract_listeners";
 import { popups } from "../../utils/popup_utils";
-import { AccentInput, AccentInputArea } from "../../widgets/inputs";
+import { AccentInput } from "../../widgets/inputs";
 import { ViewMessage } from "../../widgets/message/view_message";
 import { PageTitle } from "../../widgets/texts";
 
 const ViewPage = (props) => {
-	const [walletAvailable, setWalletAvailable] = useState(false);
 	const [contents, setContents] = useState([]);
-	const [search, setSearch] = useState();
+	const [search] = useState();
 	const setWalletLoadCallback = useOutletContext();
 
 	useEffect(() => {
 		setWalletLoadCallback(() => {
+			console.log("asdf");
 			getMyMessages().then((res) => {
 				if (res.length > 0) {
 					setContents(res);
 				}
 			});
 		});
+		try {
+			getMyMessages().then((res) => {
+				if (res.length > 0) {
+					setContents(res);
+				}
+			});
+		} catch (e) {
+			console.log(`Error ${e}`);
+		}
 	});
 
 	return (
@@ -66,14 +73,15 @@ const ContentList = (props) => {
 		<div>
 			{props.children.map((e) => (
 				<ViewMessage
+					key={e.messageId}
 					onClick={async () => {
+						setupMessageListener(dispatch, (e) => {
+							dispatch(showContentPopup(e));
+						});
 						dispatch(showPopup(popups.transactionInProgress));
 						try {
-							const res = await getFullMessage(e);
-							console.log(res);
-							dispatch(dismissPopup());
+							await getFullMessage(e);
 						} catch (e) {
-							console.log(e);
 							dispatch(dismissPopup());
 						}
 					}}
@@ -86,10 +94,6 @@ const ContentList = (props) => {
 };
 const NoMessages = (props) => {
 	return <div className="text-center">Enter a address to search</div>;
-};
-
-const EmptyList = (props) => {
-	return <div className="text-center">You have not hidden anything yet...</div>;
 };
 
 export { ViewPage };
