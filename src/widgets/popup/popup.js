@@ -17,12 +17,16 @@ const Popup = (props) => {
 				<div className="mx-6 mt-3 break-all text-sm font-normal text-white subpixel-antialiased">
 					{popup.message}
 				</div>
-				<div
-					className="my-6 ml-auto mr-8 cursor-pointer select-none rounded-lg bg-white py-2 px-4 font-semibold text-red-600 subpixel-antialiased"
-					onClick={() => dispatch(dismissPopup({}))}
-				>
-					{popup.buttonText}
-				</div>
+				{popup.dismissable ? (
+					<div
+						className="my-6 ml-auto mr-8 cursor-pointer select-none rounded-lg bg-white py-2 px-4 font-semibold text-red-600 subpixel-antialiased"
+						onClick={() => dispatch(dismissPopup({}))}
+					>
+						{popup.buttonText}
+					</div>
+				) : (
+					<div> </div>
+				)}
 			</div>
 		</div>
 	);

@@ -30,4 +30,10 @@ export const popups = {
 		title: "Success",
 		message: "Your message has been saved to the blockchain",
 	},
+
+	transactionInProgress: {
+		title: "Transaction in Progress",
+		message: "",
+		dismissable: false,
+	},
 };

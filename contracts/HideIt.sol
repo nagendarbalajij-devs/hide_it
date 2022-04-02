@@ -58,10 +58,9 @@ contract HideIt {
         payable
         checkFine(_messageId)
         checkPrivate(_messageId)
-        returns (Message memory)
     {
         Message memory m = contentForMessageId[_messageId];
-        return m;
+        emit ReturnMessage(m);
     }
 
     // Get a saved message from senders addresss
@@ -88,6 +87,7 @@ contract HideIt {
 
     //EVENTS
     event ReturnSaveMessageId(bytes32);
+    event ReturnMessage(Message);
 
     // MODIFIERS
     modifier checkPrivate(bytes32 messageId) {

@@ -7,6 +7,7 @@ export const popupSlice = createSlice({
 		title: "",
 		message: "",
 		buttonText: "",
+		dismissable: true,
 	},
 	reducers: {
 		showPopup: (state, value) => {
@@ -14,6 +15,7 @@ export const popupSlice = createSlice({
 			state.title = value.payload.title;
 			state.message = value.payload.message;
 			state.buttonText = value.payload.buttonText ?? "OK";
+			state.dismissable = value.payload.dismissable ?? true;
 		},
 		dismissPopup: (state) => {
 			state.show = false;

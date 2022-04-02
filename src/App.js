@@ -5,6 +5,7 @@ import store from "./redux/store";
 import { Popup } from "./widgets/popup/popup";
 import { WalletStatePage } from "./screens/wallet_state_page/wallet_state_page";
 import { useState } from "react";
+import { ContentPopup } from "./widgets/content_popup/content_popup";
 
 const App = (props) => {
 	var walletLoadCallback = () => {};
@@ -29,6 +30,7 @@ const App = (props) => {
 					</div>
 				</div>
 				<Popup />
+				<ContentPopup />
 			</WalletStatePage>
 		</Provider>
 	);

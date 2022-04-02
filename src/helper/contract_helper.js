@@ -7,8 +7,8 @@ import { ContractServices, get, send } from "../services/contract_services";
 export const saveMessageHelper = async (message) => {
 	const res = await send(
 		ContractServices.instance.contract.saveMessage(
-			message.message,
 			message.content,
+			message.message,
 			message.fMessage,
 			message.fine.toString(),
 			message.isPrivate
@@ -20,14 +20,26 @@ export const saveMessageHelper = async (message) => {
 
 export const getMyMessages = async (address) => {
 	console.log(ContractServices.instance.getSigner());
+	var list = [];
 	const res = await get(
 		ContractServices.instance.contract.getMessageFromAddress()
 	);
-	console.log(res.length);
 	if (res.length > 0) {
-		const res2 = await get(
-			ContractServices.instance.contract.getMessageContentFromId(res[1])
-		);
-		console.log(res2);
+		for (let i = 0; i < res.length && i <= 10; i++) {
+			list.push(
+				await ContractServices.instance.contract.getMessageContentFromId(res[i])
+			);
+		}
+		return list;
 	}
+};
+
+export const getFullMessage = async ({ messageId, fine }) => {
+	console.log(messageId);
+	const res = await send(
+		ContractServices.instance.contract.getMessage(messageId.toString(), {
+			value: fine.toString(),
+		})
+	);
+	return res;
 };

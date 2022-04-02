@@ -4,7 +4,10 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useOutletContext } from "react-router-dom";
-import { getMyMessages } from "../../helper/contract_helper";
+import { getFullMessage, getMyMessages } from "../../helper/contract_helper";
+import { showContentPopup } from "../../redux/content_popup/content_popup_slice";
+import { dismissPopup, showPopup } from "../../redux/popups/popup_slice";
+import { popups } from "../../utils/popup_utils";
 import { AccentInput, AccentInputArea } from "../../widgets/inputs";
 import { ViewMessage } from "../../widgets/message/view_message";
 import { PageTitle } from "../../widgets/texts";
@@ -17,7 +20,11 @@ const ViewPage = (props) => {
 
 	useEffect(() => {
 		setWalletLoadCallback(() => {
-			getMyMessages();
+			getMyMessages().then((res) => {
+				if (res.length > 0) {
+					setContents(res);
+				}
+			});
 		});
 	});
 
@@ -54,10 +61,25 @@ const ViewPage = (props) => {
 };
 
 const ContentList = (props) => {
+	const dispatch = useDispatch();
 	return (
 		<div>
 			{props.children.map((e) => (
-				<ViewMessage>{e}</ViewMessage>
+				<ViewMessage
+					onClick={async () => {
+						dispatch(showPopup(popups.transactionInProgress));
+						try {
+							const res = await getFullMessage(e);
+							console.log(res);
+							dispatch(dismissPopup());
+						} catch (e) {
+							console.log(e);
+							dispatch(dismissPopup());
+						}
+					}}
+				>
+					{e}
+				</ViewMessage>
 			))}
 		</div>
 	);
